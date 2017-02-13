@@ -12,7 +12,7 @@
 #import "SqliteStudentFunction.h"
 #import "StudentCell.h"
 
-@interface DatabaseViewController ()<UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, DetailViewControllerDelegate>
+@interface DatabaseViewController ()<UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, DetailViewControllerDelegate, StudentCellDelegate>
 
 @property (strong,nonatomic) NSMutableArray *studentsArr;
 @property (weak,nonatomic) UITableView *tableView;
@@ -52,6 +52,7 @@
     
     for (StudentModel *studentModel in sourceArr) {
         NSInteger section = [collation sectionForObject:studentModel collationStringSelector:@selector(name)];
+        studentModel.section = section;
         [sectionsArr[section] addObject:studentModel];
     }
     
@@ -90,23 +91,50 @@
         NSArray *tempSection = [collation sortedArrayFromArray:singleSection collationStringSelector:@selector(name)];
         singleSection = [NSMutableArray arrayWithArray:tempSection];
         NSInteger row = [singleSection indexOfObject:studentModel];
+        
+        //插入cell
         [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:row inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
+        
+        //刷新索引
+        [self.tableView reloadSectionIndexTitles];
     }
 }
 - (void)deleteStudent:(NSNotification *)sender
 {
     StudentModel *studentModel = sender.userInfo[@"student"];
     if (studentModel) {
-        NSUInteger index = [self.studentsArr indexOfObject:studentModel];
+        //移除数据
+        NSUInteger index = [self.studentsArr[studentModel.section] indexOfObject:studentModel];
         [self.studentsArr removeObject:studentModel];
-        [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        
+        //删除cell
+        [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:studentModel.section]] withRowAnimation:UITableViewRowAnimationNone];
+        
+        //刷新索引
+        [self.tableView reloadSectionIndexTitles];
     }
 }
 - (void)changeStudent:(NSNotification *)sender
 {
     StudentModel *studentModel = sender.userInfo[@"student"];
     if (studentModel) {
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.studentsArr indexOfObject:studentModel] inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        //移除原数据
+        NSUInteger index = [self.studentsArr[studentModel.section] indexOfObject:studentModel];
+        [self.studentsArr[studentModel.section] removeObject:studentModel];
+        //删除cell
+        [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:studentModel.section]] withRowAnimation:UITableViewRowAnimationNone];
+        
+        //添加新数据
+        UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
+        NSInteger section = [collation sectionForObject:studentModel collationStringSelector:@selector(name)];
+        studentModel.section = section;
+        [self.studentsArr[section] addObject:studentModel];
+        
+        //插入cell
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.studentsArr[section] indexOfObject:studentModel] inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
+        
+        //刷新索引
+        [self.tableView reloadSectionIndexTitles];
     }
 }
 
@@ -152,15 +180,7 @@
         [sender setTitle:@"删除"];
     }
 }
-- (void)updateAction:(UIButton *)sender
-{
-    StudentModel *studentModel = self.studentsArr[sender.tag];
-    
-    DetailViewController *nextCtr = [DetailViewController detailViewController:studentModel andType:DetailViewControllerTypeEdit];
-    nextCtr.delegate = self;
-    nextCtr.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:nextCtr animated:YES];
-}
+
 #pragma mark - <UITableViewDelegate, UITableViewDataSource>代理方法
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -173,23 +193,15 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"CellIdentifier";
-    StudentCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (cell == nil) {
-        cell = [[StudentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-        button.frame = CGRectMake(0, 0, 50, 30);
-        [button setTitle:@"更新" forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(updateAction:) forControlEvents:UIControlEventTouchUpInside];
-        cell.accessoryView = button;
-    }
-    
     StudentModel *studentModel = self.studentsArr[indexPath.section][indexPath.row];
-    cell.imageView.image = studentModel.photo ? studentModel.photo : [ConFunc imageFromColor:Color_Random andSize:CGSizeMake(100, 100)];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@，学号：%@，年龄：%d", studentModel.name, studentModel.studentNumber, studentModel.age];
-    cell.accessoryView.tag = indexPath.row;
+    StudentCell *cell = [StudentCell studentCell:tableView andStudentModel:studentModel];
+    cell.delegate = self;
     
     return cell;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 76;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -219,8 +231,23 @@
             [resultArr addObject:[UILocalizedIndexedCollation currentCollation].sectionTitles[index]];
         }
     }
+    [resultArr insertObject:UITableViewIndexSearch atIndex:0];
     
     return resultArr;
+}
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+    NSInteger result;
+    if (index == 0) {
+        result  = -1;
+        [tableView scrollRectToVisible:tableView.tableHeaderView.frame animated:NO];
+    }
+    else
+    {
+        result = [[UILocalizedIndexedCollation currentCollation].sectionTitles indexOfObject:title];
+    }
+    
+    return result;
 }
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -229,8 +256,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.studentsArr removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        [Notification_Default_Center postNotificationName:DeleteStudentNotifiction object:nil userInfo:@{@"student": self.studentsArr[indexPath.section][indexPath.row]}];
     }
 }
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -264,6 +290,15 @@
 - (void)detailViewControllerAfterChange:(DetailViewController *)ctr
 {
     [Notification_Default_Center postNotificationName:ChangeStudentNotifiction object:nil userInfo:@{@"student": ctr.studentModel}];
+}
+
+#pragma mark - <StudentCellDelegate>代理方法
+- (void)studentCellAfterUpdate:(StudentCell *)cell
+{
+    DetailViewController *nextCtr = [DetailViewController detailViewController:cell.studentModel andType:DetailViewControllerTypeEdit];
+    nextCtr.delegate = self;
+    nextCtr.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:nextCtr animated:YES];
 }
 
 @end

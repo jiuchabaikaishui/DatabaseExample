@@ -16,6 +16,7 @@
 @property (copy, nonatomic) NSString *name;
 @property (assign, nonatomic) int age;
 @property (copy, nonatomic) NSString *address;
-@property (copy,nonatomic) NSString *describe;
+@property (copy, nonatomic) NSString *describe;
+@property (assign, nonatomic) NSInteger section;
 
 @end

@@ -20,6 +20,7 @@
 @interface StudentCell : UITableViewCell
 
 @property (strong,nonatomic) StudentModel *studentModel;
+@property (weak,nonatomic) id<StudentCellDelegate> delegate;
 
 + (instancetype)studentCell:(UITableView *)tableView andStudentModel:(StudentModel *)studentModel;
 

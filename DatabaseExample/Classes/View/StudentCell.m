@@ -17,7 +17,7 @@
 @property (weak, nonatomic) UILabel *nameLabel;
 @property (weak, nonatomic) UILabel *numberLabel;
 @property (weak, nonatomic) UILabel *ageLabel;
-@property (weak, nonatomic) UIButton *updateButton;
+@property (weak,nonatomic) UIButton *updateButton;
 
 @end
 
@@ -27,7 +27,7 @@
 {
     if (studentModel) {
         _studentModel = studentModel;
-        self.imageView.image = studentModel.photo;
+        self.photoImageView.image = studentModel.photo;
         self.nameLabel.text = [NSString stringWithFormat:@"姓名：%@", studentModel.name];
         self.numberLabel.text = [NSString stringWithFormat:@"学号：%@", studentModel.studentNumber];
         self.ageLabel.text = [NSString stringWithFormat:@"年龄：%i", studentModel.age];
@@ -57,19 +57,11 @@
 
 - (void)settingUi
 {
-//    self.imageView.backgroundColor = Color_Random;
-//    self.textLabel.backgroundColor = Color_Random;
-//    self.imageView.layer.cornerRadius = 3;
-//    self.imageView.layer.masksToBounds = YES;
-//    self.imageView.layer.borderWidth = 0.5;
-//    self.imageView.layer.borderColor = [UIColor grayColor].CGColor;
-    
-//    CGFloat X = SPACING;
-//    CGFloat Y = SPACING;
-//    CGFloat W = 100;
-//    CGFloat H = W;
-//    CGRect rect = CGRectMake(X, Y, W, H);
     UIImageView *imageView = [[UIImageView alloc] init];
+    imageView.layer.cornerRadius = 5;
+    imageView.layer.masksToBounds = YES;
+    imageView.layer.borderWidth = 0.5;
+    imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     [self.contentView addSubview:imageView];
     self.photoImageView = imageView;
     
@@ -94,24 +86,54 @@
     self.ageLabel = label;
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [];
+    [button setTitle:@"更新" forState:UIControlStateNormal];
+    button.titleLabel.textColor = darkColor;
+    [button setBackgroundImage:[ConFunc imageFromColor:Color_Random andSize:CGSizeMake(100, 100)] forState:UIControlStateNormal];
+    [button setBackgroundImage:[ConFunc imageFromColor:Color_Random andSize:CGSizeMake(100, 100)] forState:UIControlStateSelected];
+    button.layer.cornerRadius = 5;
+    button.layer.masksToBounds = YES;
+    button.layer.borderWidth = 0.5;
+    button.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    [button addTarget:self action:@selector(updateAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:button];
+    self.updateButton = button;
 }
 
-//- (void)layoutSubviews
-//{
-//    [super layoutSubviews];
-//    
-//    CGFloat X = SPACING;
-//    CGFloat Y = 7;
-//    CGFloat W = 30;
-//    CGFloat H = W;
-//    self.imageView.frame = CGRectMake(X, Y, W, H);
-//    
-//    X = self.imageView.frameRight + SPACING;
-//    Y = 0;
-//    W = self.frameWidth - X;
-//    H = 44;
-//    self.textLabel.frame = CGRectMake(X, Y, W, H);
-//}
+- (void)updateAction:(UIButton *)sender
+{
+    if ([self.delegate respondsToSelector:@selector(studentCellAfterUpdate:)]) {
+        [self.delegate studentCellAfterUpdate:self];
+    }
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    CGFloat X = SPACING;
+    CGFloat Y = SPACING;
+    CGFloat W = 60;
+    CGFloat H = W;
+    self.photoImageView.frame = CGRectMake(X, Y, W, H);
+    
+    X = self.photoImageView.frameRight + SPACING;
+    W = self.frameWidth - X - H - 4*SPACING;
+    H = 20;
+    self.nameLabel.frame = CGRectMake(X, Y, W, H);
+    
+    Y = self.nameLabel.frameBottom;
+    self.numberLabel.frame = CGRectMake(X, Y, W, H);
+    
+    Y = self.numberLabel.frameBottom;
+    self.ageLabel.frame = CGRectMake(X, Y, W, H);
+    
+    X = self.nameLabel.frameRight + SPACING;
+    Y = SPACING;
+    W = 60;
+    H = W;
+    self.updateButton.frame = CGRectMake(X, Y, W, H);
+    
+    self.backgroundView.frame = CGRectMake(0, self.backgroundView.frame.origin.y, self.backgroundView.frame.size.width, self.backgroundView.frame.size.height);
+}
 
 @end
