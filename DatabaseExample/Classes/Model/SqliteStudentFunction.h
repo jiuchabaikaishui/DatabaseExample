@@ -37,6 +37,14 @@
 + (void)updateStudent:(StudentModel *)studentModel  succesefulBlock:(void (^)(StudentModel *studentModel))succese andFailureBlock:(void (^)(NSString *msg))failure;
 
 /**
+ *  按条件搜索学生
+ *
+ *  @param condition 条件
+ *  @param callBack  搜索回调
+ */
++ (void)searchStudents:(NSString *)condition andCallBack:(void (^)(NSArray *students, NSString *msg))callBack;
+
+/**
  *  删除学生
  *
  *  @param studentModel 学生模型

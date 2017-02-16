@@ -1,0 +1,27 @@
+
+/* Class = "UILabel"; text = "描述"; ObjectID = "8Ns-fD-RRQ"; */
+"8Ns-fD-RRQ.text" = "描述";
+
+/* Class = "UILabel"; text = "年龄"; ObjectID = "BD1-Ns-80K"; */
+"BD1-Ns-80K.text" = "年龄";
+
+/* Class = "UITextField"; placeholder = "请输入学号！"; ObjectID = "Tgm-Ih-rlb"; */
+"Tgm-Ih-rlb.placeholder" = "请输入学号！";
+
+/* Class = "UILabel"; text = "照片"; ObjectID = "VxB-kF-XmY"; */
+"VxB-kF-XmY.text" = "照片";
+
+/* Class = "UILabel"; text = "地址"; ObjectID = "jVf-9z-wR4"; */
+"jVf-9z-wR4.text" = "地址";
+
+/* Class = "UILabel"; text = "学号"; ObjectID = "mqC-kA-503"; */
+"mqC-kA-503.text" = "学号";
+
+/* Class = "UITextField"; placeholder = "请输入年龄！"; ObjectID = "nm0-sx-bTu"; */
+"nm0-sx-bTu.placeholder" = "请输入年龄！";
+
+/* Class = "UITextField"; placeholder = "请输入姓名！"; ObjectID = "vfF-Ca-83O"; */
+"vfF-Ca-83O.placeholder" = "请输入姓名！";
+
+/* Class = "UILabel"; text = "姓名"; ObjectID = "yPA-0A-5e9"; */
+"yPA-0A-5e9.text" = "姓名";

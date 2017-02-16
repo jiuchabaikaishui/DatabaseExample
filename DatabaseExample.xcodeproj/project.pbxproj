@@ -67,6 +67,8 @@
 		181EDC351E4C682400920E8A /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		182800331E4DC6CF00309459 /* StudentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StudentCell.h; sourceTree = "<group>"; };
 		182800341E4DC6CF00309459 /* StudentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudentCell.m; sourceTree = "<group>"; };
+		1831BC9A1E52A5A3005AEBF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		1831BC9B1E52A5A3005AEBF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		186BB5F91E4B0E2600511AB5 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		186BB5FB1E4B101100511AB5 /* SqliteDBAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SqliteDBAccess.h; sourceTree = "<group>"; };
 		186BB5FC1E4B101100511AB5 /* SqliteDBAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SqliteDBAccess.m; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1812028A1E481E3100EE11DD /* Base */,
+				1831BC9A1E52A5A3005AEBF3 /* zh-Hans */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1812028F1E481E3100EE11DD /* Base */,
+				1831BC9B1E52A5A3005AEBF3 /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

@@ -97,18 +97,6 @@
     [button addTarget:self action:@selector(updateAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:button];
     self.updateButton = button;
-}
-
-- (void)updateAction:(UIButton *)sender
-{
-    if ([self.delegate respondsToSelector:@selector(studentCellAfterUpdate:)]) {
-        [self.delegate studentCellAfterUpdate:self];
-    }
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
     
     CGFloat X = SPACING;
     CGFloat Y = SPACING;
@@ -117,7 +105,7 @@
     self.photoImageView.frame = CGRectMake(X, Y, W, H);
     
     X = self.photoImageView.frameRight + SPACING;
-    W = self.frameWidth - X - H - 4*SPACING;
+    W = MainScreen_Width - X - H - 4*SPACING;
     H = 20;
     self.nameLabel.frame = CGRectMake(X, Y, W, H);
     
@@ -132,8 +120,45 @@
     W = 60;
     H = W;
     self.updateButton.frame = CGRectMake(X, Y, W, H);
+}
+
+- (void)updateAction:(UIButton *)sender
+{
+    if ([self.delegate respondsToSelector:@selector(studentCellAfterUpdate:)]) {
+        [self.delegate studentCellAfterUpdate:self];
+    }
+}
+
+- (void)willTransitionToState:(UITableViewCellStateMask)state
+{
+    [super willTransitionToState:state];
     
-    self.backgroundView.frame = CGRectMake(0, self.backgroundView.frame.origin.y, self.backgroundView.frame.size.width, self.backgroundView.frame.size.height);
+    if (state == UITableViewCellStateShowingEditControlMask) {
+        CGFloat W = MainScreen_Width - self.nameLabel.frameX - self.updateButton.frameWidth - 4*SPACING - 38;
+        self.nameLabel.frameWidth = W;
+        
+        self.numberLabel.frameWidth = W;
+        
+        self.ageLabel.frameWidth = W;
+        
+        self.updateButton.frameX = self.nameLabel.frameRight + SPACING;
+    }
+}
+
+- (void)didTransitionToState:(UITableViewCellStateMask)state
+{
+    [super didTransitionToState:state];
+    
+    if (state == UITableViewCellStateDefaultMask) {
+        CGFloat W = MainScreen_Width - self.nameLabel.frameX - self.updateButton.frameWidth - 4*SPACING;
+        self.nameLabel.frameWidth = W;
+        
+        self.numberLabel.frameWidth = W;
+        
+        self.ageLabel.frameWidth = W;
+        
+        self.updateButton.frameX = self.nameLabel.frameRight + SPACING;
+    }
 }
 
 @end
