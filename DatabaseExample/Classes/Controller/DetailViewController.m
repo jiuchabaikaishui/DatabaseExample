@@ -223,11 +223,13 @@
     self.addressTextView.layer.masksToBounds = YES;
     self.addressTextView.layer.borderWidth = 0.5;
     self.addressTextView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.addressTextView.placeholder = @"请输入地址！";
     
     self.describeTextView.layer.cornerRadius = 5;
     self.describeTextView.layer.masksToBounds = YES;
     self.describeTextView.layer.borderWidth = 0.5;
     self.describeTextView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.describeTextView.placeholder = @"请输入描述！";
 }
 
 #pragma mark - <UITableViewDataSource, UITableViewDelegate>代理方法

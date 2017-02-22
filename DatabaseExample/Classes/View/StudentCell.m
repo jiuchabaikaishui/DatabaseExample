@@ -62,6 +62,7 @@
     imageView.layer.masksToBounds = YES;
     imageView.layer.borderWidth = 0.5;
     imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    imageView.backgroundColor = Color_Random;
     [self.contentView addSubview:imageView];
     self.photoImageView = imageView;
     
@@ -116,9 +117,9 @@
     self.ageLabel.frame = CGRectMake(X, Y, W, H);
     
     X = self.nameLabel.frameRight + SPACING;
-    Y = SPACING;
     W = 60;
     H = W;
+    Y = 8;
     self.updateButton.frame = CGRectMake(X, Y, W, H);
 }
 

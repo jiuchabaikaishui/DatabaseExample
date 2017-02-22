@@ -18,6 +18,7 @@
 		181EDC341E4C681000920E8A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 181EDC331E4C681000920E8A /* AVFoundation.framework */; };
 		181EDC361E4C682400920E8A /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 181EDC351E4C682400920E8A /* AssetsLibrary.framework */; };
 		182800351E4DC6CF00309459 /* StudentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 182800341E4DC6CF00309459 /* StudentCell.m */; };
+		1831BCE61E5D6971005AEBF3 /* PlaceholderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1831BCE51E5D6971005AEBF3 /* PlaceholderTextView.m */; };
 		186BB5FA1E4B0E2600511AB5 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 186BB5F91E4B0E2600511AB5 /* libsqlite3.0.tbd */; };
 		186BB5FD1E4B101100511AB5 /* SqliteDBAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BB5FC1E4B101100511AB5 /* SqliteDBAccess.m */; };
 		186BB6001E4C0E8D00511AB5 /* SqliteStudentFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BB5FF1E4C0E8D00511AB5 /* SqliteStudentFunction.m */; };
@@ -26,7 +27,6 @@
 		1892E5B31E48B73000ABC95F /* StudentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1892E5B21E48B73000ABC95F /* StudentModel.m */; };
 		1892E5B61E48BAAA00ABC95F /* DatabaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1892E5B51E48BAAA00ABC95F /* DatabaseViewController.m */; };
 		1892E5B91E48C4A100ABC95F /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1892E5B81E48C4A100ABC95F /* DetailViewController.m */; };
-		1892E5BC1E48C72400ABC95F /* PlaceholderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1892E5BB1E48C72400ABC95F /* PlaceholderTextView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +69,8 @@
 		182800341E4DC6CF00309459 /* StudentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudentCell.m; sourceTree = "<group>"; };
 		1831BC9A1E52A5A3005AEBF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		1831BC9B1E52A5A3005AEBF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		1831BCE41E5D6971005AEBF3 /* PlaceholderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceholderTextView.h; sourceTree = "<group>"; };
+		1831BCE51E5D6971005AEBF3 /* PlaceholderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceholderTextView.m; sourceTree = "<group>"; };
 		186BB5F91E4B0E2600511AB5 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		186BB5FB1E4B101100511AB5 /* SqliteDBAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SqliteDBAccess.h; sourceTree = "<group>"; };
 		186BB5FC1E4B101100511AB5 /* SqliteDBAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SqliteDBAccess.m; sourceTree = "<group>"; };
@@ -86,8 +88,6 @@
 		1892E5B51E48BAAA00ABC95F /* DatabaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseViewController.m; sourceTree = "<group>"; };
 		1892E5B71E48C4A100ABC95F /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		1892E5B81E48C4A100ABC95F /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
-		1892E5BA1E48C72400ABC95F /* PlaceholderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceholderTextView.h; sourceTree = "<group>"; };
-		1892E5BB1E48C72400ABC95F /* PlaceholderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceholderTextView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,8 +260,8 @@
 		1892E59C1E485BB100ABC95F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				1892E5BA1E48C72400ABC95F /* PlaceholderTextView.h */,
-				1892E5BB1E48C72400ABC95F /* PlaceholderTextView.m */,
+				1831BCE41E5D6971005AEBF3 /* PlaceholderTextView.h */,
+				1831BCE51E5D6971005AEBF3 /* PlaceholderTextView.m */,
 				182800331E4DC6CF00309459 /* StudentCell.h */,
 				182800341E4DC6CF00309459 /* StudentCell.m */,
 			);
@@ -409,7 +409,7 @@
 				1892E5B61E48BAAA00ABC95F /* DatabaseViewController.m in Sources */,
 				1892E5B31E48B73000ABC95F /* StudentModel.m in Sources */,
 				186BB6001E4C0E8D00511AB5 /* SqliteStudentFunction.m in Sources */,
-				1892E5BC1E48C72400ABC95F /* PlaceholderTextView.m in Sources */,
+				1831BCE61E5D6971005AEBF3 /* PlaceholderTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

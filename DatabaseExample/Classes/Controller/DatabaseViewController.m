@@ -12,7 +12,7 @@
 #import "SqliteStudentFunction.h"
 #import "StudentCell.h"
 
-@interface DatabaseViewController ()<UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, DetailViewControllerDelegate, StudentCellDelegate>
+@interface DatabaseViewController ()<UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, DetailViewControllerDelegate, StudentCellDelegate, UISearchDisplayDelegate>
 
 @property (strong,nonatomic) NSMutableArray *studentsArr;
 @property (strong,nonatomic) NSMutableArray *searchStudentsArr;
@@ -23,10 +23,14 @@
 @end
 
 @implementation DatabaseViewController
-
+typedef void (^sub)(int x, int y);
 #pragma mark - 属性方法
 - (NSMutableArray *)studentsArr
 {
+    sub subBlock = ^void(int x, int y){
+        
+    };
+    subBlock(5, 10);
     if (_studentsArr == nil) {
         _studentsArr = [NSMutableArray arrayWithCapacity:1];
         
@@ -101,83 +105,6 @@
     [Notification_Default_Center addObserver:self selector:@selector(changeStudent:) name:ChangeStudentNotifiction object:nil];
 }
 
-- (void)addStudent:(NSNotification *)sender
-{
-    StudentModel *studentModel = sender.userInfo[@"student"];
-    if (studentModel) {
-        //为StudentModel模型设置section
-        UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
-        NSInteger section = [collation sectionForObject:studentModel collationStringSelector:@selector(name)];
-        studentModel.section = section;
-        
-        //添加数据
-        NSMutableArray *singleSection = self.studentsArr[section];
-        [singleSection addObject:studentModel];
-        NSArray *tempSection = [collation sortedArrayFromArray:singleSection collationStringSelector:@selector(name)];
-        singleSection = [NSMutableArray arrayWithArray:tempSection];
-        NSInteger row = [singleSection indexOfObject:studentModel];
-        
-        //插入cell
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:row inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
-        
-        //刷新索引
-        [self.tableView reloadSectionIndexTitles];
-        
-        //如果是搜索的
-        if (self.searchDisplayCtr.active) {
-            [self.searchDisplayCtr.searchResultsTableView reloadData];
-        }
-    }
-}
-- (void)deleteStudent:(NSNotification *)sender
-{
-    StudentModel *studentModel = sender.userInfo[@"student"];
-    if (studentModel) {
-        //移除数据
-        NSUInteger index = [self.studentsArr[studentModel.section] indexOfObject:studentModel];
-        [self.studentsArr[studentModel.section] removeObject:studentModel];
-        
-        //删除cell
-        [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:studentModel.section]] withRowAnimation:UITableViewRowAnimationNone];
-        
-        //刷新索引
-        [self.tableView reloadSectionIndexTitles];
-        
-        //如果是搜索的
-        if (self.searchDisplayCtr.active) {
-            [self.searchDisplayCtr.searchResultsTableView reloadData];
-        }
-    }
-}
-- (void)changeStudent:(NSNotification *)sender
-{
-    StudentModel *studentModel = sender.userInfo[@"student"];
-    if (studentModel) {
-        //移除原数据
-        NSUInteger index = [self.studentsArr[studentModel.section] indexOfObject:studentModel];
-        [self.studentsArr[studentModel.section] removeObject:studentModel];
-        //删除cell
-        [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:studentModel.section]] withRowAnimation:UITableViewRowAnimationNone];
-        
-        //添加新数据
-        UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
-        NSInteger section = [collation sectionForObject:studentModel collationStringSelector:@selector(name)];
-        studentModel.section = section;
-        [self.studentsArr[section] addObject:studentModel];
-        
-        //插入cell
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.studentsArr[section] indexOfObject:studentModel] inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
-        
-        //刷新索引
-        [self.tableView reloadSectionIndexTitles];
-        
-        //如果是搜索的
-        if (self.searchDisplayCtr.active) {
-            [self.searchDisplayCtr.searchResultsTableView reloadData];
-        }
-    }
-}
-
 #pragma mark - 自定义方法
 - (void)settingUi
 {
@@ -196,6 +123,8 @@
     UISearchDisplayController *displayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
     displayController.searchResultsDataSource = self;
     displayController.searchResultsDelegate = self;
+    displayController.delegate = self;
+    displayController.searchResultsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.searchDisplayCtr = displayController;
     tableView.tableHeaderView = searchBar;
     tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -206,6 +135,90 @@
     [self.view addSubview:tableView];
     self.tableView = tableView;
 }
+- (void)refreshUi
+{
+    self.studentsArr = nil;
+    [self.tableView reloadData];
+}
+
+- (void)addStudent:(NSNotification *)sender
+{
+    StudentModel *studentModel = sender.userInfo[@"student"];
+    if (studentModel) {
+        //为StudentModel模型设置section
+        UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
+        NSInteger section = [collation sectionForObject:studentModel collationStringSelector:@selector(name)];
+        studentModel.section = section;
+        
+        //添加数据
+        NSMutableArray *singleSection = self.studentsArr[section];
+        [singleSection addObject:studentModel];
+        NSArray *tempSection = [collation sortedArrayFromArray:singleSection collationStringSelector:@selector(name)];
+        singleSection = [NSMutableArray arrayWithArray:tempSection];
+        self.studentsArr[section] = singleSection;
+        NSInteger row = [singleSection indexOfObject:studentModel];
+        
+        //插入cell
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:row inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
+        
+        //刷新索引
+        [self.tableView reloadSectionIndexTitles];
+    }
+}
+
+- (void)deleteStudent:(NSNotification *)sender
+{
+    StudentModel *studentModel = sender.userInfo[@"student"];
+    if (studentModel) {
+        //如果是搜索的
+        if (self.searchDisplayCtr.active) {
+            [self.searchDisplayCtr.searchResultsTableView reloadData];
+        }
+        else
+        {
+            //移除数据
+            NSUInteger index = [self.studentsArr[studentModel.section] indexOfObject:studentModel];
+            [self.studentsArr[studentModel.section] removeObject:studentModel];
+            
+            //删除cell
+            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:studentModel.section]] withRowAnimation:UITableViewRowAnimationNone];
+            
+            //刷新索引
+            [self.tableView reloadSectionIndexTitles];
+        }
+    }
+}
+- (void)changeStudent:(NSNotification *)sender
+{
+    StudentModel *studentModel = sender.userInfo[@"student"];
+    if (studentModel) {
+        //如果是搜索的
+        if (self.searchDisplayCtr.active) {
+            [self.searchDisplayCtr.searchResultsTableView reloadData];
+        }
+        else
+        {
+            //移除原数据
+            NSUInteger index = [self.studentsArr[studentModel.section] indexOfObject:studentModel];
+            [self.studentsArr[studentModel.section] removeObject:studentModel];
+            //删除cell
+            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:studentModel.section]] withRowAnimation:UITableViewRowAnimationNone];
+            
+            //添加新数据
+            UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
+            NSInteger section = [collation sectionForObject:studentModel collationStringSelector:@selector(name)];
+            studentModel.section = section;
+            [self.studentsArr[section] addObject:studentModel];
+            
+            //插入cell
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.studentsArr[section] indexOfObject:studentModel] inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
+            
+            //刷新索引
+            [self.tableView reloadSectionIndexTitles];
+        }
+    }
+}
+
 - (void)addAction:(UIBarButtonItem *)sender
 {
     DetailViewController *nextCtr = [DetailViewController detailViewController:nil andType:DetailViewControllerTypeEdit];
@@ -395,6 +408,13 @@
     nextCtr.delegate = self;
     nextCtr.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:nextCtr animated:YES];
+}
+
+#pragma mark - <UISearchDisplayDelegate>代理方法
+- (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller
+{
+    self.studentsArr = nil;
+    [self.tableView reloadData];
 }
 
 @end

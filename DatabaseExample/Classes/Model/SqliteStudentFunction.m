@@ -66,10 +66,22 @@ static sqlite3 *database;
  */
 + (void)searchStudents:(NSString *)condition andCallBack:(void (^)(NSArray *students, NSString *msg))callBack
 {//
-    [SqliteDBAccess prepareSql:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE name LIKE ? or studentNumber LIKE ? or age LIKE ?;", StudentTableName] fromDatabase:database succesefulBlock:^(sqlite3_stmt *stmt) {
+    
+    int age = [condition intValue];
+    NSString *selectStr;
+    if (age != 0 || [condition isEqualToString:@"0"]) {
+        selectStr = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE name LIKE ? or studentNumber LIKE ? or age LIKE ?;", StudentTableName];
+    }
+    else
+    {
+        selectStr = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE name LIKE ? or studentNumber LIKE ?;", StudentTableName];
+    }
+    [SqliteDBAccess prepareSql:selectStr fromDatabase:database succesefulBlock:^(sqlite3_stmt *stmt) {
         sqlite3_bind_text(stmt, 1, [NSString stringWithFormat:@"%%%@%%", condition].UTF8String, -1, NULL);
         sqlite3_bind_text(stmt, 2, [NSString stringWithFormat:@"%%%@%%", condition].UTF8String, -1, NULL);
-        sqlite3_bind_int(stmt, 3, [condition intValue]);
+        if (age != 0 || [condition isEqualToString:@"0"]) {
+            sqlite3_bind_int(stmt, 3, age);
+        }
         
         if (callBack) {
             callBack([self getStudentsFromStatement:stmt], @"搜索成功！");
@@ -154,7 +166,7 @@ static sqlite3 *database;
                 sqlite3_bind_text(stmt, 5, studentModel.address.UTF8String, -1, NULL);
                 sqlite3_bind_text(stmt, 6, studentModel.describe.UTF8String, -1, NULL);
                 if (sqlite3_step(stmt) == SQLITE_DONE) {
-                    [SqliteDBAccess prepareSql:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE studentNumber =: ?;", StudentTableName] fromDatabase:database succesefulBlock:^(sqlite3_stmt *stmt) {
+                    [SqliteDBAccess prepareSql:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE studentNumber = ?;", StudentTableName] fromDatabase:database succesefulBlock:^(sqlite3_stmt *stmt) {
                         sqlite3_bind_text(stmt, 1, studentModel.studentNumber.UTF8String, -1, NULL);
                         StudentModel *model = [[self getStudentsFromStatement:stmt] firstObject];
                         if (studentModel) {
