@@ -65,8 +65,7 @@ static sqlite3 *database;
  *  @param callBack  搜索回调
  */
 + (void)searchStudents:(NSString *)condition andCallBack:(void (^)(NSArray *students, NSString *msg))callBack
-{//
-    
+{
     int age = [condition intValue];
     NSString *selectStr;
     if (age != 0 || [condition isEqualToString:@"0"]) {
@@ -154,7 +153,7 @@ static sqlite3 *database;
     //添加事务的代码
     {
         //开启事务
-        [SqliteDBAccess executeSql:@"BEGIN" toDatabase:database succesefulBlock:^{
+        [SqliteDBAccess executeSql:@"BEGIN TRANSACTION" toDatabase:database succesefulBlock:^{
             DebugLog(@"事务启动成功！");
             
             [SqliteDBAccess prepareSql:[NSString stringWithFormat:@"INSERT INTO %@ (name, studentNumber, photo, age, address, describe) VALUES(?, ?, ?, ?, ?, ?);", StudentTableName] fromDatabase:database succesefulBlock:^(sqlite3_stmt *stmt) {
@@ -176,7 +175,7 @@ static sqlite3 *database;
                             }
                             
                             //提交事务
-                            [SqliteDBAccess executeSql:@"COMMIT" toDatabase:database succesefulBlock:^{
+                            [SqliteDBAccess executeSql:@"COMMIT TRANSACTION" toDatabase:database succesefulBlock:^{
                                 DebugLog(@"提交事务成功！");
                             } andFailureBlock:^(NSString *msg) {
                                 DebugLog(@"提交事务失败：%@", msg);
@@ -185,7 +184,7 @@ static sqlite3 *database;
                         else
                         {
                             //回滚事务
-                            [SqliteDBAccess executeSql:@"ROLLBACK" toDatabase:database succesefulBlock:^{
+                            [SqliteDBAccess executeSql:@"ROLLBACK TRANSACTION" toDatabase:database succesefulBlock:^{
                                 DebugLog(@"回滚成功！");
                             } andFailureBlock:^(NSString *msg) {
                                 DebugLog(@"回滚失败：%@", msg);
@@ -199,7 +198,7 @@ static sqlite3 *database;
                             failure(msg);
                             
                             //回滚事务
-                            [SqliteDBAccess executeSql:@"ROLLBACK" toDatabase:database succesefulBlock:^{
+                            [SqliteDBAccess executeSql:@"ROLLBACK TRANSACTION" toDatabase:database succesefulBlock:^{
                                 DebugLog(@"回滚成功！");
                             } andFailureBlock:^(NSString *msg) {
                                 DebugLog(@"回滚失败：%@", msg);
@@ -222,7 +221,7 @@ static sqlite3 *database;
                 }
                 
                 //回滚事务
-                [SqliteDBAccess executeSql:@"ROLLBACK" toDatabase:database succesefulBlock:^{
+                [SqliteDBAccess executeSql:@"ROLLBACK TRANSACTION" toDatabase:database succesefulBlock:^{
                     DebugLog(@"回滚成功！");
                 } andFailureBlock:^(NSString *msg) {
                     DebugLog(@"回滚失败：%@", msg);

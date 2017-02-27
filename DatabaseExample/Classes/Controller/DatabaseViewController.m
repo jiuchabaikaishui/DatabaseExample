@@ -53,7 +53,7 @@ typedef void (^sub)(int x, int y);
 }
 
 /**
- *  按首字母分组
+ *  按首字母分组排序
  *
  *  @param sourceArr 目标数组
  *
@@ -156,10 +156,9 @@ typedef void (^sub)(int x, int y);
         NSArray *tempSection = [collation sortedArrayFromArray:singleSection collationStringSelector:@selector(name)];
         singleSection = [NSMutableArray arrayWithArray:tempSection];
         self.studentsArr[section] = singleSection;
-        NSInteger row = [singleSection indexOfObject:studentModel];
         
         //插入cell
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:row inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.studentsArr[section] indexOfObject:studentModel] inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
         
         //刷新索引
         [self.tableView reloadSectionIndexTitles];
@@ -208,7 +207,11 @@ typedef void (^sub)(int x, int y);
             UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
             NSInteger section = [collation sectionForObject:studentModel collationStringSelector:@selector(name)];
             studentModel.section = section;
-            [self.studentsArr[section] addObject:studentModel];
+            NSMutableArray *singleSection = self.studentsArr[section];
+            [singleSection addObject:studentModel];
+            NSArray *tempSection = [collation sortedArrayFromArray:singleSection collationStringSelector:@selector(name)];
+            singleSection = [NSMutableArray arrayWithArray:tempSection];
+            self.studentsArr[section] = singleSection;
             
             //插入cell
             [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.studentsArr[section] indexOfObject:studentModel] inSection:section]] withRowAnimation:UITableViewRowAnimationNone];
